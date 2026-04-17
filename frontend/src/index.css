@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Portfolio Design System - Updated for Christian Bookstore */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    /* Brand Colors - Warm Parchment & Deep Navy */
+    --background: 40 30% 98%;    /* Soft Parchment */
+    --foreground: 222 47% 11%;   /* Deep Charcoal */
+    
+    /* Card & Surface Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    /* Interactive Elements - Deep Navy */
+    --primary: 222 47% 20%; 
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 222 47% 40%;
+    
+    --secondary: 35 30% 88%;     /* Dusty Gold/Tan */
+    --secondary-foreground: 222 47% 11%;
+    
+    /* Accent Colors - Divine Gold */
+    --accent: 38 92% 50%; 
+    --accent-foreground: 0 0% 100%;
+    --accent-glow: 38 92% 70%;
+    
+    /* Neutral Colors */
+    --muted: 40 10% 92%;
+    --muted-foreground: 215 16% 47%;
+    
+    --border: 35 20% 85%;
+    --input: 35 20% 85%;
+    --ring: 38 92% 50%;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 20%), hsl(222 47% 10%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(40 30% 96%));
+    --gradient-text: linear-gradient(135deg, hsl(38 92% 50%), hsl(32 95% 44%));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+    --shadow-glow: 0 0 40px hsl(38 92% 50% / 0.15);
+    
+    --radius: 0.75rem;
+
+    --sidebar-background: 40 30% 96%;
+    --sidebar-foreground: 222 47% 26%;
+    --sidebar-primary: 222 47% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 35 30% 90%;
+    --sidebar-accent-foreground: 222 47% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 38 92% 50%;
+  }
+
+  .dark {
+    /* Brand Colors - Dark Mode (Midnight Grace) */
+    --background: 222 47% 4%;
+    --foreground: 40 30% 98%;
+    
+    /* Card & Surface Colors - Dark Mode */
+    --card: 222 47% 6%;
+    --card-foreground: 40 30% 98%;
+    
+    /* Interactive Elements - Dark Mode */
+    --primary: 222 47% 75%; 
+    --primary-foreground: 222 47% 4%;
+    --primary-glow: 222 47% 85%;
+    
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 240 5% 96%;
+    
+    /* Accent Colors - Dark Mode (Spiritual Purple) */
+    --accent: 265 89% 65%; 
+    --accent-foreground: 222 47% 4%;
+    --accent-glow: 265 89% 75%;
+    
+    /* Neutral Colors - Dark Mode */
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 265 89% 65%;
+    
+    /* Gradients - Dark Mode */
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 10%), hsl(222 47% 2%));
+    --gradient-card: linear-gradient(145deg, hsl(222 47% 6%), hsl(240 4% 8%));
+    --gradient-text: linear-gradient(135deg, hsl(38 92% 60%), hsl(265 89% 65%));
+    
+    /* Shadows - Dark Mode */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
+    --shadow-glow: 0 0 40px hsl(265 89% 65% / 0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+    /* Added Crimson Pro for Headings while keeping your base classes */
+    font-family: 'Crimson Pro', serif;
+  }
+  
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Animation Classes */
+  .animate-fade-up {
+    animation: fade-up 0.6s ease-out forwards;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.8s ease-out forwards;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    backdrop-filter: blur(12px);
+    background: hsl(var(--background) / 0.8);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  
+  /* Hover Glow Effect */
+  .hover-glow {
+    transition: all 0.3s ease;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+}
+
+@layer utilities {
+  /* Custom Shadows */
+  .shadow-custom-sm { box-shadow: var(--shadow-sm); }
+  .shadow-custom-md { box-shadow: var(--shadow-md); }
+  .shadow-custom-lg { box-shadow: var(--shadow-lg); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+}
+
+/* Keyframes */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  to {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+  }
+}
