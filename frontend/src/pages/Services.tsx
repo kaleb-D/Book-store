@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Activity, BookOpen, Users, Edit3, Trash2, Plus, MessageCircle } from "lucide-react";
+import { Activity, BookOpen, Users, Edit3, Trash2, Plus, MessageCircle, Lock } from "lucide-react";
 
 const categories = [
   'Bible',
@@ -31,6 +31,8 @@ const emptyBookForm = {
 
 export default function Services() {
   const [adminToken, setAdminToken] = useState(() => localStorage.getItem('adminToken') || '');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState<'dashboard' | 'books' | 'users' | 'contacts'>('dashboard');
   const [stats, setStats] = useState<any>(null);
   const [books, setBooks] = useState<any[]>([]);
@@ -369,6 +371,84 @@ export default function Services() {
 
   const noToken = !adminToken;
 
+  const handleAdminLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!adminPassword.trim()) {
+      setError('Please enter the admin password.');
+      return;
+    }
+
+    setAuthLoading(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.error || 'Unable to sign in');
+      }
+
+      const token = result?.token;
+      if (!token) {
+        throw new Error('No token returned from admin sign-in');
+      }
+
+      setAdminToken(token);
+      setAdminPassword('');
+      setMessage('Admin access granted.');
+    } catch (err: any) {
+      setError(err.message || 'Unable to sign in');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  if (!adminToken) {
+    return (
+      <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-3xl">
+          <Card className="p-8 border border-primary/20 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <Lock className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-3xl font-bold">Admin Access Required</h1>
+                <p className="text-muted-foreground">
+                  Enter the admin password to unlock the dashboard.
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleAdminLogin} className="mt-6 space-y-4">
+              <input
+                type="password"
+                value={adminPassword}
+                onChange={e => setAdminPassword(e.target.value)}
+                className="w-full rounded-lg border border-secondary bg-background px-4 py-3 text-sm text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                placeholder="Enter admin password"
+              />
+              <Button type="submit" disabled={authLoading} className="w-full">
+                {authLoading ? 'Unlocking...' : 'Unlock Admin Dashboard'}
+              </Button>
+            </form>
+
+            {(message || error) && (
+              <Card className="mt-6 p-4">
+                {message && <p className="text-sm text-emerald-500">{message}</p>}
+                {error && <p className="text-sm text-red-500">{error}</p>}
+              </Card>
+            )}
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-7xl">
@@ -382,14 +462,18 @@ export default function Services() {
               </p>
             </div>
             <div className="flex flex-col gap-3 w-full md:w-[420px]">
-              <label className="text-sm font-medium text-muted-foreground">Admin Bearer Token</label>
-              <input
-                type="text"
-                value={adminToken}
-                onChange={e => setAdminToken(e.target.value)}
-                className="w-full rounded-lg border border-secondary bg-background px-4 py-3 text-sm text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                placeholder="Paste admin token here"
-              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setAdminToken('');
+                  setAdminPassword('');
+                  setMessage(null);
+                  setError(null);
+                }}
+              >
+                Sign out
+              </Button>
             </div>
           </div>
 
@@ -415,11 +499,14 @@ export default function Services() {
 
         {noToken && (
           <Card className="mb-8 border border-yellow-400 bg-yellow-500/10 text-yellow-900">
-            <div className="p-5">
-              <h2 className="font-semibold text-lg">Admin token required</h2>
-              <p className="text-sm text-muted-foreground">
-                Protected admin actions (stats, book create/edit/delete, user role updates) require a valid bearer token.
-              </p>
+            <div className="p-5 flex items-start gap-3">
+              <Lock className="mt-0.5 h-5 w-5" />
+              <div>
+                <h2 className="font-semibold text-lg">Admin access required</h2>
+                <p className="text-sm text-muted-foreground">
+                  Enter the admin password to unlock the dashboard and manage books, users, and contact requests.
+                </p>
+              </div>
             </div>
           </Card>
         )}

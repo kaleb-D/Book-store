@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { NavLink } from "react-router-dom"
+import { useEffect, useRef, useState } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -16,6 +16,34 @@ const navItems = [
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const [brandClicks, setBrandClicks] = useState(0)
+  const navigate = useNavigate()
+  const clickTimeoutRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleBrandClick = () => {
+    if (clickTimeoutRef.current) {
+      window.clearTimeout(clickTimeoutRef.current)
+    }
+
+    const nextClicks = brandClicks + 1
+    setBrandClicks(nextClicks)
+
+    if (nextClicks >= 3) {
+      setBrandClicks(0)
+      navigate('/services')
+      return
+    }
+
+    clickTimeoutRef.current = window.setTimeout(() => setBrandClicks(0), 900)
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
@@ -23,9 +51,13 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <NavLink to="/" className="text-xl font-bold gradient-text">
+            <button
+              type="button"
+              onClick={handleBrandClick}
+              className="text-xl font-bold gradient-text text-left"
+            >
               christian Book Store
-            </NavLink>
+            </button>
           </div>
 
           {/* Desktop Navigation */}

@@ -102,6 +102,35 @@ export const login = async (req, res, next) => {
  * @route   GET /api/auth/google/callback
  * @access  Public
  */
+export const adminLogin = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+    const expectedPassword = process.env.ADMIN_PASSWORD || 'ChristianBookStore2026!';
+
+    if (!password || password !== expectedPassword) {
+      return res.status(401).json({
+        success: false,
+        error: 'Incorrect admin password',
+      });
+    }
+
+    let adminUser = await User.findOne({ role: 'admin' });
+
+    if (!adminUser) {
+      adminUser = await User.create({
+        name: 'Admin',
+        email: process.env.ADMIN_EMAIL || 'admin@christianbookstore.com',
+        password: expectedPassword,
+        role: 'admin',
+      });
+    }
+
+    sendTokenResponse(adminUser, 200, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const googleCallback = (req, res) => {
   const token = generateToken(req.user._id);
 

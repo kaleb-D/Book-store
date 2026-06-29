@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   register,
   login,
+  adminLogin,
   googleCallback,
   getMe,
   updateProfile,
@@ -15,6 +16,7 @@ const router = Router();
 // Public routes
 router.post('/register', validateRegister, register);
 router.post('/login', validateLogin, login);
+router.post('/admin-login', adminLogin);
 
 // Google OAuth routes
 /*router.get(
